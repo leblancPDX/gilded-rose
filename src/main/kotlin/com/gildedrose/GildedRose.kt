@@ -24,8 +24,7 @@ open class BasicItem {
         item.quality = when {
             item.sellIn < 0 -> item.quality - 2
             else -> item.quality - 1
-        }
-        item.quality = item.quality.coerceAtLeast(0)
+        }.coerceAtLeast(0)
     }
 }
 
@@ -43,8 +42,7 @@ object BackstagePass : BasicItem() {
             item.sellIn < 5 -> item.quality + 3
             item.sellIn < 10 -> item.quality + 2
             else -> item.quality + 1
-        }
-        item.quality = item.quality.coerceAtMost(50)
+        }.coerceAtMost(50)
     }
 }
 
@@ -53,11 +51,21 @@ object Legendary : BasicItem() {
     override fun degrade(item: Item) {}
 }
 
+object Conjured : BasicItem() {
+    override fun degrade(item: Item) {
+        item.quality = when {
+            item.sellIn < 0 -> item.quality - 4
+            else -> item.quality - 2
+        }.coerceAtLeast(0)
+    }
+}
+
 fun typeOf(item: Item): BasicItem {
     return when {
         item.name.startsWith("Aged Brie") -> AgedBrie
         item.name.startsWith("Backstage passes") -> BackstagePass
         item.name.startsWith("Sulfuras") -> Legendary
+        item.name.startsWith("Conjured") -> Conjured
         else -> BasicItem()
     }
 }
